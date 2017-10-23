@@ -33,6 +33,9 @@ public class RegisterNewGroup extends AppCompatActivity implements AdapterView.O
     private Spinner courseSpinner;
     private Spinner numSpinner;
     private ArrayList<String> courseNames;
+    private Switch isPrivate;
+    private EditText inviteCode;
+    private EditText et_name;
     //private  course;
 
     @Override
@@ -40,13 +43,10 @@ public class RegisterNewGroup extends AppCompatActivity implements AdapterView.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_new_group);
         final SBRequestQueue SBQueue = SBRequestQueue.getInstance(this);
-        final EditText et_name = (EditText) findViewById(R.id.et_GroupName);
-        //final EditText et_desc = (EditText) findViewById(R.id.et_desc);
         Button btm = (Button) findViewById(R.id.btm_RegisterGroup);
-
-
-        final Switch isPrivate = (Switch) findViewById(R.id.sw_private);
-        final EditText inviteCode = (EditText) findViewById(R.id.et_inviteC);
+        et_name = (EditText) findViewById(R.id.et_GroupName);
+        isPrivate = (Switch) findViewById(R.id.sw_private);
+        inviteCode = (EditText) findViewById(R.id.et_inviteC);
         inviteCode.setVisibility(View.INVISIBLE);
 
         isPrivate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
@@ -65,12 +65,10 @@ public class RegisterNewGroup extends AppCompatActivity implements AdapterView.O
             if(!courseNames.contains(course.get(i).getName()))
                 courseNames.add(course.get(i).getName());
         }
+
         Log.d("newgroup", Integer.toString(courseNames.size()));
-        //适配器
         ArrayAdapter<String> arr_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, courseNames);
-        //设置样式
         arr_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //加载适配器
         courseSpinner.setAdapter(arr_adapter);
         courseSpinner.setOnItemSelectedListener(this);
 
@@ -79,28 +77,8 @@ public class RegisterNewGroup extends AppCompatActivity implements AdapterView.O
             @Override
             public void onClick(View v) {
 
-                String name = et_name.getText().toString();
-                int privateOrNot;
-                if(isPrivate.isChecked())
-                    privateOrNot = 1;
-                else privateOrNot = 0;
-                String inCode = inviteCode.getText().toString();
-
-                String course_name = courseSpinner.getSelectedItem().toString();
-                int course_num = Integer.parseInt(numSpinner.getSelectedItem().toString());
-                int course_id = UISystem.getInstance().getCourseID(course_name, course_num);
-
-                final Student student = Student.getInstance();
-
-                String staticURL = getResources().getString(R.string.deployURL) + "group?";
-                String url = staticURL + "token=" + student.getToken() + "&isPrivate=" + privateOrNot +
-                             "&groupName=" + name +
-                             "&inviteCode=" + inCode +
-                             "&courseId=" + course_id +
-                             "&action=createGroup";
-
+                String url = generateURL();
                 Log.d("newgroup", url);
-
                 StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                         new Response.Listener<String>() {
                             @Override
@@ -123,6 +101,7 @@ public class RegisterNewGroup extends AppCompatActivity implements AdapterView.O
                                                 public void onClick(DialogInterface dialog, int id) {
                                                     //do things
                                                     Intent mainpageIntent = new Intent(RegisterNewGroup.this, MainPage.class);
+                                                    Student student = Student.getInstance();
                                                     Bundle bundle = new Bundle();
                                                     bundle.putString("token", student.getToken());
                                                     mainpageIntent.putExtras(bundle);
@@ -136,6 +115,7 @@ public class RegisterNewGroup extends AppCompatActivity implements AdapterView.O
                         }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        //need an empty override method
                     }
                 });
                 // Add the request to the RequestQueue
@@ -145,6 +125,32 @@ public class RegisterNewGroup extends AppCompatActivity implements AdapterView.O
 
 
     }
+
+    private String generateURL() {
+        String name = et_name.getText().toString();
+        int privateOrNot;
+        if(isPrivate.isChecked())
+            privateOrNot = 1;
+        else privateOrNot = 0;
+        String inCode = inviteCode.getText().toString();
+
+        String course_name = courseSpinner.getSelectedItem().toString();
+        int course_num = Integer.parseInt(numSpinner.getSelectedItem().toString());
+        int course_id = UISystem.getInstance().getCourseID(course_name, course_num);
+
+        final Student student = Student.getInstance();
+
+        String staticURL = getResources().getString(R.string.deployURL) + "group?";
+        String url = staticURL + "token=" + student.getToken() + "&isPrivate=" + privateOrNot +
+                "&groupName=" + name +
+                "&inviteCode=" + inCode +
+                "&courseId=" + course_id +
+                "&action=createGroup";
+
+        return url;
+    }
+
+
 
 
     @Override
