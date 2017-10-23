@@ -33,7 +33,7 @@ public class RegisterNewGroup extends AppCompatActivity implements AdapterView.O
     private Spinner courseSpinner;
     private Spinner numSpinner;
     private ArrayList<String> courseNames;
-    private ArrayList<Course> course;
+    //private  course;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +75,7 @@ public class RegisterNewGroup extends AppCompatActivity implements AdapterView.O
 
         courseSpinner = (Spinner) findViewById(R.id.sp_courseNames);
         numSpinner = (Spinner) findViewById(R.id.sp_num);
-        course = UISystem.getInstance().getCourseNames(this);
+        ArrayList<Course> course = UISystem.getInstance().getCourseNames(this);
         courseNames = new ArrayList<String>();
 
         for(int i = 0; i < course.size();i++) {
@@ -133,7 +133,7 @@ public class RegisterNewGroup extends AppCompatActivity implements AdapterView.O
                             public void onResponse(String response) {
                                 String resText = response.toString();
 
-                                if(resText.equals("failed") ) {
+                                if("failed".equals(resText)) {
                                     AlertDialog.Builder builder = new AlertDialog.Builder(RegisterNewGroup.this);
                                     builder.setMessage("Fail to create the group")
                                             .setNegativeButton("RETRY", null)
@@ -189,7 +189,7 @@ public class RegisterNewGroup extends AppCompatActivity implements AdapterView.O
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-
+    //need an empty method to override
     }
 
 

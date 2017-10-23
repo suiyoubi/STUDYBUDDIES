@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import exception.AttachRuntimeException;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -76,7 +78,7 @@ public class MycourseFragment extends Fragment {
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
-            throw new RuntimeException(context.toString()
+            throw new AttachRuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
     }

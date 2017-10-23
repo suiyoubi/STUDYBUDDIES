@@ -30,11 +30,11 @@ public class Student implements User, Serializable {
     private String name;
     private String email;
     private String username;
-    private int numberOfCourses;
+    //private int numberOfCourses;
     private int numberOfGroups;
     private List<String> groups;
     private List<String> courses;
-    private String motto;
+    //private String motto;
     public boolean isSet;
 
     private static Student instance;
@@ -112,9 +112,9 @@ public class Student implements User, Serializable {
                             name = null;
                             email = null;
                             username = "not set";
-                            motto = null;
+                            //motto = null;
                             numberOfGroups = 0;
-                            numberOfCourses = 0;
+                            //numberOfCourses = 0;
                         }
                     }
                 }, new Response.ErrorListener() {
