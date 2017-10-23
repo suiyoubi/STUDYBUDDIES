@@ -15,7 +15,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 
-import SBRequestManager.SBRequestQueue;
+import sbrequest.SBRequestQueue;
 
 public class LoginActivity extends AppCompatActivity {
 

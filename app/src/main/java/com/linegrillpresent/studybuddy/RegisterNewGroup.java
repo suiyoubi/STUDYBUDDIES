@@ -23,7 +23,7 @@ import com.android.volley.toolbox.StringRequest;
 import java.util.ArrayList;
 import java.util.List;
 
-import SBRequestManager.SBRequestQueue;
+import sbrequest.SBRequestQueue;
 import system.Course;
 import system.UISystem;
 import user.Student;
@@ -52,27 +52,10 @@ public class RegisterNewGroup extends AppCompatActivity implements AdapterView.O
         isPrivate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
             @Override
             public void onCheckedChanged(CompoundButton cb, boolean on){
-                if(on)
-                {
-                    //Do something when Switch button is on/checked
-                    //tView.setText("Switch is on.....");
-                    inviteCode.setVisibility(View.VISIBLE);
-                }
-                else
-                {
-                    //Do something when Switch is off/unchecked
-                    //tView.setText("Switch is off.....");
-                    inviteCode.setVisibility(View.INVISIBLE);
-                }
+                if(on) inviteCode.setVisibility(View.VISIBLE);
+                else inviteCode.setVisibility(View.INVISIBLE);
             }
         });
-
-
-
-
-
-
-
         courseSpinner = (Spinner) findViewById(R.id.sp_courseNames);
         numSpinner = (Spinner) findViewById(R.id.sp_num);
         ArrayList<Course> course = UISystem.getInstance().getCourseNames(this);
@@ -107,17 +90,8 @@ public class RegisterNewGroup extends AppCompatActivity implements AdapterView.O
                 int course_num = Integer.parseInt(numSpinner.getSelectedItem().toString());
                 int course_id = UISystem.getInstance().getCourseID(course_name, course_num);
 
-                /*
-                Bundle bundle = getIntent().getExtras();
-                final Student student = (Student) bundle.getSerializable("student");
-                */
                 final Student student = Student.getInstance();
 
-                /*
-                http://localhost:8080/Servlet/group?token=5256d241-4810-4650-8287-3ff16dfe12f3
-                &isPrivate=0
-                &groupName=112&inviteCode=&courseId=1&action=createGroup
-                 */
                 String staticURL = getResources().getString(R.string.deployURL) + "group?";
                 String url = staticURL + "token=" + student.getToken() + "&isPrivate=" + privateOrNot +
                              "&groupName=" + name +
@@ -131,7 +105,7 @@ public class RegisterNewGroup extends AppCompatActivity implements AdapterView.O
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
-                                String resText = response.toString();
+                                String resText = response;
 
                                 if("failed".equals(resText)) {
                                     AlertDialog.Builder builder = new AlertDialog.Builder(RegisterNewGroup.this);
@@ -162,7 +136,6 @@ public class RegisterNewGroup extends AppCompatActivity implements AdapterView.O
                         }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        //test.setText("That didn't work!");
                     }
                 });
                 // Add the request to the RequestQueue

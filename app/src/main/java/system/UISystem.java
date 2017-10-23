@@ -16,7 +16,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import SBRequestManager.SBRequestQueue;
+import sbrequest.SBRequestQueue;
 
 /**
  * Created by Ao on 2017-10-22.

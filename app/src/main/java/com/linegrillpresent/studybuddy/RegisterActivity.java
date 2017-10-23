@@ -14,7 +14,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 
-import SBRequestManager.SBRequestQueue;
+import sbrequest.SBRequestQueue;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -49,7 +49,7 @@ public class RegisterActivity extends AppCompatActivity {
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
-                                String resText = response.toString();
+                                String resText = response;
 
                                 if("succeed".equals(resText) ) {
                                     AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);

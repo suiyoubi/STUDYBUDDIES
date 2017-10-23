@@ -25,7 +25,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import SBRequestManager.SBRequestQueue;
+import sbrequest.SBRequestQueue;
 import user.Student;
 
 public class MainPage extends AppCompatActivity
@@ -147,7 +147,7 @@ public class MainPage extends AppCompatActivity
             manager.beginTransaction().replace(R.id.layout_for_fragments,profilefraement,profilefraement.getTag()).commit();
 
         } else if (id == R.id.Course) {
-           MycourseFragment coursefragment = MycourseFragment.newInstance("course","1");
+           MycourseFragment coursefragment = MycourseFragment.newInstance();
             manager.beginTransaction().replace(R.id.layout_for_fragments,coursefragment,coursefragment.getTag()).commit();
         } else if (id == R.id.Group) {
             MygroupFragment groupfragment = MygroupFragment.newInstance(student_user);
