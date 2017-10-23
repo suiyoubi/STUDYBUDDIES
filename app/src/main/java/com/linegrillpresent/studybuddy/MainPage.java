@@ -1,0 +1,171 @@
+package com.linegrillpresent.studybuddy;
+
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import SBRequestManager.SBRequestQueue;
+import user.Student;
+
+public class MainPage extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener,MycourseFragment.OnFragmentInteractionListener,MyprofileFragment.OnFragmentInteractionListener
+        ,MygroupFragment.OnFragmentInteractionListener{
+    private String token;
+    private Student student_user;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main_page);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+            this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+
+        Log.d("cpen", "oncreate");
+
+        //get Token passed in
+        Bundle tokenBundle = getIntent().getExtras();
+        String token = tokenBundle.getString("token");
+        student_user = Student.getInstance();
+        student_user.setToken(token);
+        student_user.updateInfo(this);
+        student_user.updateGroupInfo(this);
+        //student_user
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+
+        getMenuInflater().inflate(R.menu.main_page, menu);
+
+        Log.d("cpen", "menu");
+
+        final TextView myUnameDisplay = (TextView) findViewById(R.id.Username);
+        final TextView myEmailDisplay = (TextView) findViewById(R.id.Email);
+
+        String url = "http://206.87.135.138:8080/Servlet/main?token=" + token;
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            myUnameDisplay.setText(response.get("name").toString());
+                            myEmailDisplay.setText(response.get("email").toString());
+                        }catch (JSONException e)
+                        {myUnameDisplay.setText("Json exception");
+                         myEmailDisplay.setText("Json exception");}
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        myUnameDisplay.setText("Scott not ready");
+                        myEmailDisplay.setText("Scott not ready");
+                    }
+                });
+        // Access the RequestQueue through your singleton class.
+       SBRequestQueue.getInstance(this).addToRequestQueue(jsObjRequest);
+       // myUnameDisplay.setText(student_user.getName());
+       // myEmailDisplay.setText(student_user.getEmail());
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+        FragmentManager manager = getSupportFragmentManager();
+        if (id == R.id.Profile) {
+
+            MyprofileFragment profilefraement = MyprofileFragment.newInstance(student_user);
+            manager.beginTransaction().replace(R.id.layout_for_fragments,profilefraement,profilefraement.getTag()).commit();
+
+        } else if (id == R.id.Course) {
+           MycourseFragment coursefragment = MycourseFragment.newInstance("course","1");
+            manager.beginTransaction().replace(R.id.layout_for_fragments,coursefragment,coursefragment.getTag()).commit();
+        } else if (id == R.id.Group) {
+            MygroupFragment groupfragment = MygroupFragment.newInstance(student_user);
+            manager.beginTransaction().replace(R.id.layout_for_fragments,groupfragment,groupfragment.getTag()).commit();
+        } else if (id == R.id.Setting) {
+
+        } else if (id == R.id.nav_share) {
+
+        } else if (id == R.id.nav_send) {
+           
+        }
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
+}
